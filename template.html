@@ -34,6 +34,16 @@ URL: https://code.google.com/p/io-2012-slides
         background: white;
         padding: 10px;
       }
+      #panel {
+        position: absolute;
+        top: 60px;
+        left: 50%;
+        margin-left: -180px;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+      }
   </style>
   <script src="https://maps.googleapis.com/maps/api/js"></script>
   <script src="js/mapas.js"></script>
@@ -238,11 +248,172 @@ URL: https://code.google.com/p/io-2012-slides
 
   <slide>
     <hgroup>
-      <h4>Adicionando mais marcadores e alterando zoom e tipo de mapa <button onclick="initialize4()">Carregar Mapa</button></h4>
+      <h4>Adicionando marcadores personalizados e legenda no mapa <button onclick="initialize4()">Carregar Mapa</button></h4>
     </hgroup>
     <article>
         <div id="map-canvas_4" class="map-canvas"></div>
         <div id="legenda"></div>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Adicionando rotas e informações em marcadores</h4>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="javascript">
+        ...
+        <b>var directionsService = new google.maps.DirectionsService();
+        var directionsRenderer = new google.maps.DirectionsRenderer();
+        directionsRenderer.setMap(map);
+        var request = { 
+          origin:new google.maps.LatLng(-27.3585, -53.3967), 
+          destination:new google.maps.LatLng(-27.395195, -53.428319),
+          travelMode: google.maps.DirectionsTravelMode.DRIVING
+        };
+        directionsService.route(request, function(response, status) {
+          if (status == google.maps.DirectionsStatus.OK) {
+            directionsRenderer.setDirections(response);
+          }
+        });</b>
+        <b>var ufsm = "&lt;b>UFSM/FW&lt;/b>&lt;p>&lt;a href='http://www.cesnors.ufsm.br/'>www.cesnors.ufsm.br&lt;/a>";</b>
+        var iff = "&lt;b>IFF/FW&lt;/b>&lt;p>&lt;a href='http://www.fw.iffarroupilha.edu.br/'>www.fw.iffarroupilha.edu.br&lt;/a>";
+        <b>var info_ufsm = new google.maps.InfoWindow({
+            content: ufsm
+        });</b>
+        var info_iff = new google.maps.InfoWindow({
+            content: iff
+        });
+        <b>google.maps.event.addListener(marker_1, 'click', function() {
+          info_ufsm.open(map,marker_1);</b>
+        });
+        google.maps.event.addListener(marker_2, 'click', function() {
+          info_iff.open(map,marker_2);
+        });
+      </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Adicionando rotas e informações em marcadores <button onclick="initialize5()">Carregar Mapa</button></h4>
+    </hgroup>
+    <article>
+        <div id="map-canvas_5" class="map-canvas"></div>
+        <div id="legenda"></div>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Geolocalização</h4>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="javascript">
+        var mapCanvas = document.getElementById('map-canvas');
+        var mapOptions = {
+          zoom: 12,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        var map = new google.maps.Map(mapCanvas, mapOptions);
+        
+        <b>//HTML 5
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var pos = new google.maps.LatLng(position.coords.latitude,
+                                           position.coords.longitude);</b>
+
+          var infowindow = new google.maps.InfoWindow({
+            map: map,
+            position: pos,
+            content: &lt;p>&lt;b>Você está próximo deste ponto&lt;/b>&lt;/p>' +
+                     '&lt;p>Latitude: ' + pos.lat() + '&lt;/p>' +
+                     '&lt;p>Longitude: ' + pos.lng() + '&lt;/p>'
+          });
+
+          map.setCenter(pos);
+        });
+      </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Geolocalização <button onclick="initialize6()">Carregar Mapa</button></h4>
+    </hgroup>
+    <article>
+        <div id="map-canvas_6" class="map-canvas"></div>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Geocoding</h4>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="css">
+        #panel {
+          position: absolute;
+          top: 60px;
+          left: 50%;
+          margin-left: -180px;
+          z-index: 5;
+          background-color: #fff;
+          padding: 5px;
+          border: 1px solid #999;
+        }
+      </pre>
+      <pre class="prettyprint" data-lang="html">
+        &lt;div id="panel">
+          &lt;input id="address" type="textbox" value="">
+          &lt;input type="button" value="Geocode" onclick="codeAddress()">
+        &lt;/div>
+        &lt;div id="map-canvas_7" class="map-canvas"></div>
+      </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Geocoding</h4>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="javascript">
+        var geocoder = new google.maps.Geocoder();
+        var latlng = new google.maps.LatLng(-11.023498, -52.357528);
+        var mapOptions = {
+          zoom: 3,
+          center: latlng
+        }
+        var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+        function codeAddress() {
+          var address = document.getElementById('address').value;
+          geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+              map.setCenter(results[0].geometry.location);
+              var marker = new google.maps.Marker({
+                  map: map,
+                  position: results[0].geometry.location
+              });
+            } else {
+              alert('O Geocode não funcionou por alguma razão: ' + status);
+            }
+          });
+        }
+      </pre>
+    </article>
+  </slide>
+
+   <slide>
+    <hgroup>
+      <h4>Geocoding <button onclick="initialize7()">Carregar Mapa</button></h4>
+    </hgroup>
+    <article>
+        <div id="panel">
+          <input id="address" type="textbox" value="">
+          <input type="button" value="Geocode" onclick="codeAddress()">
+        </div>
+        <div id="map-canvas_7" class="map-canvas"></div>
     </article>
   </slide>
 
