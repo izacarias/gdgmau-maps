@@ -1,0 +1,615 @@
+<!--
+
+GDG[x] Glider based on
+Google IO 2012/2013 HTML5 Slide Template
+
+Authors: Eric Bidelman <ebidel@gmail.com>
+         Luke Mahé <lukem@google.com>
+
+URL: https://code.google.com/p/io-2012-slides
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <!--This one seems to work all the time, but really small on ipad-->
+  <!--<meta name="viewport" content="initial-scale=0.4">-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" media="all" href="theme/css/default.css">
+  <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="theme/css/phone.css">
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+  <script data-main="js/slides" src="js/require-1.0.8.min.js"></script>
+  <script src="js/leap.min.js"></script>
+  <script src="js/leapSwiper.js"></script>
+  <style>
+      .map-canvas {
+        width: 1000px;
+        height: 500px;
+      }
+      #legenda {
+        background: white;
+        padding: 10px;
+      }
+      #panel {
+        position: absolute;
+        top: 60px;
+        left: 50%;
+        margin-left: -180px;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+      }
+  </style>
+  <script src="https://maps.googleapis.com/maps/api/js"></script>
+  <script src="js/mapas.js"></script>
+</head>
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="logoslide nobackground">
+    <article class="flexbox vcenter">
+      <span><img src="images/gdg_logo.png"></span>
+    </article>
+  </slide>
+
+  <slide class="title-slide segue nobackground">
+    <aside class="gdbar"><img src="images/gdg_icon_128.png"></aside>
+    <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+    </hgroup>
+  </slide>
+
+    <!-- Slides Iuli -->
+  <slide>
+    <hgroup>
+      <h2>O que é?</h2>
+    </hgroup>
+    <article>
+      <p>Google Maps API permite aos desenvolvedores incluírem a ferramenta Google Maps
+      em suas páginas e aplicativos.</p>
+      <p>Há várias formas de fazer isso:</p>
+      <ul>
+        <li>Google Maps JavaScript API</li>
+        <li>Google Static Maps API</li>
+        <li>Google Maps Embed API</li>
+      </ul>
+      <p>Suporte à várias plataformas:</p>
+      <ul>
+        <li>iOS (Objective C, Swift)</li>
+        <li>Web</li>
+        <li>Android</li>
+      </ul>
+      <p>Há ainda a versão empresarial: Google Maps API for Work</p>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Quanto custa o Google Maps API?</h2>
+    </hgroup>
+    <article>
+      <p><b>Nada!</b></p>
+      <p>A maior parte das aplicações e websites podem user o Google Maps API de 
+      forma gratuita porém, se você fizer muitos (mas muitos mesmo!) acessos por 
+      dia poderá ser necessário pagar pelo uso extra.</p>
+      <br />
+      <p>Limites:</p>
+      <ul>
+        <li>25.000 <em>map loads</em> por mais de 90 dias consecutivos.</li>
+        <li>O que acontecerá neste caso?</li>
+      </ul>
+      <p>A versão paga é necessária quando:</p>
+      <ul>
+        <li>Site acessível somente por clientes pagantes</li>
+        <li>Site acessível somente de dentro de sua empersa ou intranet</li>
+        <li>Aplicações desktop "não acessíveis publicamente"</li>
+      </ul>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Sobre a API_KEY</h2>
+    </hgroup>
+    <article>
+      <p>O que é?</p>
+      <ul><li>Um código que identifica sua aplicação ou site para os servidores do Google Maps API 
+      e é obtida através do Google Developers Console.  </li></ul>
+      <br />
+      <p>Posso usar o Google Maps API sem uma API_KEY?</p>
+      <ul><li>Sim, como nos exemplos que veremos a seguir...</li></ul>
+      <br />
+      <p><b>Atenção:</b> quando for usar um host com hospedagem compartilhada ou subdomínios
+      é importante que você utiliza uma API_KEY.</p>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Muito além de mapas!</h2>
+    </hgroup>
+    <article>
+      <p>Web Services</p>
+      <ul>
+        <li>Directions API</li>
+        <li>Distance Matrix API</li>
+        <li>Elevation API</li>
+        <li>Geocoding API</li>
+        <li>Geolocation API</li>
+        <li>Roads API*</li>
+        <li>Street View Image API</li>
+        <li>Time Zone API</li>
+      </ul>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Primeiros passos</h2>
+      <h3>Do que preciso? Quais ferramentas usar?</h3>
+    </hgroup>
+    <article>
+      <p>Conhecimentos:</p>
+      <ul>
+        <li>Conhecimentos básicos de HTML</li>
+        <li>Conhecimentos básicos de JavaScript</li>
+        <li>Conhecimentos básicos de CSS</li>
+      </ul>
+      <p>Ferramentas:</p>
+      <ul>
+        <li>Conexão à internet</li>
+        <li>Um editor de texto</li>
+        <li>Um Browser</li>
+        <aside class="gdgbar right"><img src="images/browser.png"></aside>
+      </ul>
+    </article>
+  </slide>
+  <!-- Fim slides Iuli -->
+
+  <slide>
+    <hgroup>
+      <h4>Adicionando Google Maps em uma página</h4>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="html">
+        &lt;!DOCTYPE html>
+        &lt;html>
+          &lt;head>
+            <b>&lt;style>
+              #map-canvas {
+                width: 1000px;
+                height: 500px;
+              }
+            &lt;/style></b>
+            <b>&lt;script src="https://maps.googleapis.com/maps/api/js"&gt;&lt;/script&gt;</b>
+            <b>&lt;script>
+              function initialize() {
+                var mapCanvas = document.getElementById('map-canvas');
+                var mapOptions = {
+                  center: new google.maps.LatLng(44.5403, -78.5463),
+                  zoom: 8,
+                  mapTypeId: google.maps.MapTypeId.ROADMAP
+                }
+                var map = new google.maps.Map(mapCanvas, mapOptions)
+              }
+              google.maps.event.addDomListener(window, 'load', initialize);
+            &lt;/script></b>
+          &lt;/head>
+          &lt;body>
+            <b>&lt;div id="map-canvas"&gt;&lt;/div&gt;</b>
+          &lt;body>
+        &lt;/html>
+      </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Adicionando Google Maps em uma página <button onclick="initialize1()">Carregar Mapa</button></h4>
+    </hgroup>
+    <article>
+        <div id="map-canvas_1" class="map-canvas"></div>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Adicionando um marcador no mapa</h4>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="javascript">
+        <b>var myLatlng = new google.maps.LatLng(-27.3585, -53.3967);</b>
+        var mapCanvas = document.getElementById('map-canvas');
+        var mapOptions = {
+          <b>center: myLatlng,</b>
+          zoom: 9,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        var map = new google.maps.Map(mapCanvas, mapOptions)
+        <b>var marker = new google.maps.Marker({
+            position: myLatlng,
+            map: map,
+            title: 'Aqui fica Frederico Westphalen'
+        });</b>
+        google.maps.event.addDomListener(window, 'load', initialize);
+      </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Adicionando um marcador no mapa <button onclick="initialize2()">Carregar Mapa</button></h4>
+    </hgroup>
+    <article>
+        <div id="map-canvas_2" class="map-canvas"></div>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Adicionando mais marcadores e alterando zoom e tipo de mapa</h4>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="javascript">
+        <b>var myLatlng = new google.maps.LatLng(-27.378599, -53.413737);</b>
+        var mapCanvas = document.getElementById('map-canvas');
+        var mapOptions = {
+          center: myLatlng,
+          <b>zoom: 13,</b>
+          <b>mapTypeId: google.maps.MapTypeId.HYBRID</b>
+        }
+        var map = new google.maps.Map(mapCanvas, mapOptions)
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(-27.3585, -53.3967);
+            map: map,
+            title: 'Aqui fica Frederico Westphalen'
+        });
+        <b>var marker2 = new google.maps.Marker({
+            position: new google.maps.LatLng(-27.395195, -53.428319),
+            map: map,
+            title: 'Aqui fica a UFSM/FW'
+        });
+        var marker3 = new google.maps.Marker({
+            position: new google.maps.LatLng(-27.390680, -53.430186),
+            map: map,
+            title: 'Aqui fica o IF Farroupilha - FW'
+        });</b>
+        google.maps.event.addDomListener(window, 'load', initialize);
+      </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Adicionando marcadores e alterando zoom e tipo de mapa <button onclick="initialize3()">Carregar Mapa</button></h4>
+    </hgroup>
+    <article>
+        <div id="map-canvas_3" class="map-canvas"></div>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Adicionando marcadores personalizados e legenda no mapa</h4>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="css">
+        ...
+        #legenda {
+          background: white;
+          padding: 10px;
+        }
+        ...
+      </pre>
+      <pre class="prettyprint" data-lang="html">
+        ...
+        &lt;div id="map-canvas"&gt;&lt;/div&gt;
+        &lt;div id="legenda"&gt;&lt;/div&gt;
+        ...
+      </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Adicionando marcadores personalizados e legenda no mapa</h4>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="javascript">
+        ...
+        var marker_1 = new google.maps.Marker({
+            <b>icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',</b>
+            position: new google.maps.LatLng(-27.395195, -53.428319),
+            map: map,
+            title: 'Aqui fica a UFSM/FW'
+        });
+        var marker_2 = new google.maps.Marker({
+            <b>icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',</b>
+            position: new google.maps.LatLng(-27.390680, -53.430186),
+            map: map,
+            title: 'Aqui fica o IF Farroupilha - FW'
+        });
+        <b>map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('legenda'));
+        var legenda = document.getElementById('legenda');
+        var p = document.createElement('p');
+        var p2 = document.createElement('p');
+        var p3 = document.createElement('p');
+        p.innerHTML = '&lt;img src="http://maps.google.com/mapfiles/ms/icons/red-dot.png">Frederico Westphalen';
+        p2.innerHTML = '&lt;img src="http://maps.google.com/mapfiles/ms/icons/blue-dot.png">UFSM/FW';
+        p3.innerHTML = '&lt;img src="http://maps.google.com/mapfiles/ms/icons/green-dot.png">IF Farroupilha/FW';
+        legenda.appendChild(p);
+        legenda.appendChild(p2);
+        legenda.appendChild(p3);</b>
+      </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Adicionando marcadores personalizados e legenda no mapa <button onclick="initialize4()">Carregar Mapa</button></h4>
+    </hgroup>
+    <article>
+        <div id="map-canvas_4" class="map-canvas"></div>
+        <div id="legenda"></div>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Adicionando rotas e informações em marcadores</h4>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="javascript">
+        ...
+        <b>var directionsService = new google.maps.DirectionsService();
+        var directionsRenderer = new google.maps.DirectionsRenderer();
+        directionsRenderer.setMap(map);
+        var request = { 
+          origin:new google.maps.LatLng(-27.3585, -53.3967), 
+          destination:new google.maps.LatLng(-27.395195, -53.428319),
+          travelMode: google.maps.DirectionsTravelMode.DRIVING
+        };
+        directionsService.route(request, function(response, status) {
+          if (status == google.maps.DirectionsStatus.OK) {
+            directionsRenderer.setDirections(response);
+          }
+        });</b>
+        <b>var ufsm = "&lt;b>UFSM/FW&lt;/b>&lt;p>&lt;a href='http://www.cesnors.ufsm.br/'>www.cesnors.ufsm.br&lt;/a>";</b>
+        var iff = "&lt;b>IFF/FW&lt;/b>&lt;p>&lt;a href='http://www.fw.iffarroupilha.edu.br/'>www.fw.iffarroupilha.edu.br&lt;/a>";
+        <b>var info_ufsm = new google.maps.InfoWindow({
+            content: ufsm
+        });</b>
+        var info_iff = new google.maps.InfoWindow({
+            content: iff
+        });
+        <b>google.maps.event.addListener(marker_1, 'click', function() {
+          info_ufsm.open(map,marker_1);</b>
+        });
+        google.maps.event.addListener(marker_2, 'click', function() {
+          info_iff.open(map,marker_2);
+        });
+      </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Adicionando rotas e informações em marcadores <button onclick="initialize5()">Carregar Mapa</button></h4>
+    </hgroup>
+    <article>
+        <div id="map-canvas_5" class="map-canvas"></div>
+        <div id="legenda"></div>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Geolocalização</h4>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="javascript">
+        var mapCanvas = document.getElementById('map-canvas');
+        var mapOptions = {
+          zoom: 12,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        var map = new google.maps.Map(mapCanvas, mapOptions);
+        
+        <b>//HTML 5
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var pos = new google.maps.LatLng(position.coords.latitude,
+                                           position.coords.longitude);</b>
+
+          var infowindow = new google.maps.InfoWindow({
+            map: map,
+            position: pos,
+            content: &lt;p>&lt;b>Você está próximo deste ponto&lt;/b>&lt;/p>' +
+                     '&lt;p>Latitude: ' + pos.lat() + '&lt;/p>' +
+                     '&lt;p>Longitude: ' + pos.lng() + '&lt;/p>'
+          });
+
+          map.setCenter(pos);
+        });
+      </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Geolocalização <button onclick="initialize6()">Carregar Mapa</button></h4>
+    </hgroup>
+    <article>
+        <div id="map-canvas_6" class="map-canvas"></div>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Geocoding</h4>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="css">
+        #panel {
+          position: absolute;
+          top: 60px;
+          left: 50%;
+          margin-left: -180px;
+          z-index: 5;
+          background-color: #fff;
+          padding: 5px;
+          border: 1px solid #999;
+        }
+      </pre>
+      <pre class="prettyprint" data-lang="html">
+        &lt;div id="panel">
+          &lt;input id="address" type="textbox" value="">
+          &lt;input type="button" value="Geocode" onclick="codeAddress()">
+        &lt;/div>
+        &lt;div id="map-canvas_7" class="map-canvas"></div>
+      </pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h4>Geocoding</h4>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="javascript">
+        var geocoder = new google.maps.Geocoder();
+        var latlng = new google.maps.LatLng(-11.023498, -52.357528);
+        var mapOptions = {
+          zoom: 3,
+          center: latlng
+        }
+        var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+        function codeAddress() {
+          var address = document.getElementById('address').value;
+          geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+              map.setCenter(results[0].geometry.location);
+              var marker = new google.maps.Marker({
+                  map: map,
+                  position: results[0].geometry.location
+              });
+            } else {
+              alert('O Geocode não funcionou por alguma razão: ' + status);
+            }
+          });
+        }
+      </pre>
+    </article>
+  </slide>
+
+   <slide>
+    <hgroup>
+      <h4>Geocoding <button onclick="initialize7()">Carregar Mapa</button></h4>
+    </hgroup>
+    <article>
+        <div id="panel">
+          <input id="address" type="textbox" value="">
+          <input type="button" value="Geocode" onclick="codeAddress()">
+        </div>
+        <div id="map-canvas_7" class="map-canvas"></div>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Aplicações legais com Google Maps API</h2>
+    </hgroup>
+    <article>
+      <p>Planefinder.net</p>
+      <a href="http://planefinder.net/"><img src="images/googlemaps-1.png" width="980px" alt=""></a>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Aplicações legais com Google Maps API</h2>
+    </hgroup>
+    <article>
+      <p>CEO-Heatmap</p>
+      <a href="http://tools.decc.gov.uk/nationalheatmap/"><img src="images/googlemaps-2.png" width="980px" alt=""></a>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Aplicações legais com Google Maps API</h2>
+    </hgroup>
+    <article>
+      <p>Calculador de Tarifa de Taxi</p>
+      <a href="http://www.tarifadetaxi.com/"><img src="images/googlemaps-3.png" width="980px" alt=""></a>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Aplicações legais com Google Maps API</h2>
+    </hgroup>
+    <article>
+      <p>Interactive Game of Thrones Map</p>
+      <a href="http://quartermaester.info/"><img src="images/googlemaps-4.png" width="980px" alt=""></a>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Aplicações legais com Google Maps API</h2>
+    </hgroup>
+    <article>
+      <p>mapPRF</p>
+      <a href="http://mapprf.com.br/"><img src="images/googlemaps-5.png" width="980px" alt=""></a>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Aplicações legais com Google Maps API</h2>
+    </hgroup>
+    <article>
+      <p>AVDAT - Dados sobre acidentes de trabalho</p>
+      <a href="http://200.132.38.210:8080/acidentes/"><img src="images/googlemaps-6.png" width="980px" alt=""></a>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Links Interessantes</h2>
+    </hgroup>
+    <article>
+      <ul>
+        <li><a href="https://developers.google.com/maps" target="_blank">https://developers.google.com/maps</a></li>
+        <li><a href="https://developers.google.com/products" target="_blank">https://developers.google.com/products</a></li>
+        <li><a href="https://github.com/izacarias/gdgmau-maps" target="_blank">https://github.com/izacarias/gdgmau-maps</a></li>
+      </ul>
+    </article>
+  </slide>
+
+  <slide class="logoslide dark nobackground">
+    <article class="flexbox vcenter">
+      <span><img src="images/gdg_logo_white.png"></span>
+    </article>
+  </slide>
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!--[if IE]>
+  <script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+  <script>CFInstall.check({mode: 'overlay'});</script>
+<![endif]-->
+</body>
+</html>
